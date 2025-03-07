@@ -24,8 +24,9 @@ const (
 var WarmupSignature solana.Signature
 
 func SendTransactions() {
-	rpcClient := rpc.New(GlobalConfig.GetSendUrl())
-	raydiumClient := raydium.New(rpcClient, GlobalConfig.PrivateKey)
+	rpcClientUrl := rpc.New(GlobalConfig.RpcUrl)
+	rpcClientSendUrl := rpc.New(GlobalConfig.SendRpcUrl)
+	raydiumClient := raydium.New(rpcClientUrl, GlobalConfig.PrivateKey)
 
 	user := TestAccount.PublicKey()
 
@@ -43,11 +44,11 @@ func SendTransactions() {
 	outMintPK := solana.MustPublicKeyFromBase58(outMint)
 
 	// 2) Fetch decimals
-	inDecimals, err := FetchDecimalsForMint(rpcClient, inMintPK)
+	inDecimals, err := FetchDecimalsForMint(rpcClientUrl, inMintPK)
 	if err != nil {
 		SimpleLogger.Fatalf("error fetching decimals for input mint %s: %v", inMint, err)
 	}
-	outDecimals, err := FetchDecimalsForMint(rpcClient, outMintPK)
+	outDecimals, err := FetchDecimalsForMint(rpcClientUrl, outMintPK)
 	if err != nil {
 		SimpleLogger.Fatalf("error fetching decimals for output mint %s: %v", outMint, err)
 	}
@@ -70,7 +71,7 @@ func SendTransactions() {
 		warmUpSuccess := false
 		for attempt := 1; attempt <= warmUpMaxRetries; attempt++ {
 			err := doWarmUpTx(
-				rpcClient,
+				rpcClientSendUrl,
 				raydiumClient,
 				user,
 				poolKeys,
@@ -103,7 +104,7 @@ func SendTransactions() {
 						}
 						SimpleLogger.Fatal("Timed out waiting for warm-up TX to finalize")
 					default:
-						status, err := rpcClient.GetSignatureStatuses(
+						status, err := rpcClientUrl.GetSignatureStatuses(
 							context.Background(),
 							true,            // searchTransactionHistory
 							WarmupSignature, // Pass the signature directly, not as string
@@ -145,14 +146,14 @@ START_BENCHMARK:
 	// 6) Run concurrent transactions
 	amount := utils.NewTokenAmount(inputToken, GlobalConfig.Amount)
 
-	startTime := time.Now().Truncate(5 * time.Second).Add(10 * time.Second)
+	// startTime := time.Now().Truncate(5 * time.Second).Add(10 * time.Second)
 	for i := uint64(0); i < GlobalConfig.TxCount; i++ {
 		go func(id uint64) {
-			sleepTime := time.Until(startTime)
-			if id == 1 {
-				SimpleLogger.Print("Threads sleeping until benchmark start", "delay", sleepTime.Truncate(time.Millisecond))
-			}
-			time.Sleep(sleepTime)
+			// sleepTime := time.Until(startTime)
+			// if id == 1 {
+			// 	SimpleLogger.Print("Threads sleeping until benchmark start", "delay", sleepTime.Truncate(time.Millisecond))
+			// }
+			// time.Sleep(sleepTime)
 
 			// Rate limiter
 			if err := Limiter.Wait(context.TODO()); err != nil {
@@ -173,6 +174,7 @@ START_BENCHMARK:
 				return
 			}
 
+			fmt.Print("1")
 			// Build swap
 			swapTx, err := raydiumClient.Trade.MakeSwapTransaction(
 				poolKeys,
@@ -189,6 +191,7 @@ START_BENCHMARK:
 				checkStopCondition()
 				return
 			}
+			fmt.Print("2")
 
 			hasBudgetInstr := hasComputeBudgetInstruction(
 				swapTx.Message.Instructions,
@@ -206,6 +209,7 @@ START_BENCHMARK:
 					computebudget.NewSetComputeUnitLimitInstruction(uint32(GlobalConfig.ComputeUnitLimit)).Build(),
 				)
 			}
+			fmt.Print("3")
 
 			memoData := createCleanMemo("thorBench:Test%d[%s]", id, TestID)
 			memoInst := createRawMemoInstruction(memoData, user)
@@ -213,7 +217,7 @@ START_BENCHMARK:
 			allInstrs := append(prioInstructions, memoInst)
 			allInstrs = append(allInstrs, raydiumInstrs...)
 
-			latest, err := rpcClient.GetLatestBlockhash(context.TODO(), rpc.CommitmentFinalized)
+			latest, err := rpcClientUrl.GetLatestBlockhash(context.TODO(), rpc.CommitmentFinalized)
 			if err != nil {
 				Mu.Lock()
 				OtherFailures++
@@ -221,6 +225,7 @@ START_BENCHMARK:
 				checkStopCondition()
 				return
 			}
+			fmt.Print("4")
 
 			finalTx, err := solana.NewTransaction(
 				allInstrs,
@@ -249,7 +254,9 @@ START_BENCHMARK:
 				return
 			}
 
-			sig, err := rpcClient.SendTransactionWithOpts(
+			fmt.Print("5")
+
+			sig, err := rpcClientSendUrl.SendTransactionWithOpts(
 				context.TODO(),
 				finalTx,
 				rpc.TransactionOpts{
@@ -257,6 +264,10 @@ START_BENCHMARK:
 					MaxRetries:    &GlobalConfig.NodeRetries,
 				},
 			)
+
+			fmt.Print("6")
+			fmt.Print(sig.String())
+
 			if err != nil {
 				Mu.Lock()
 				OtherFailures++
@@ -264,6 +275,7 @@ START_BENCHMARK:
 				checkStopCondition()
 				return
 			}
+
 
 			Mu.Lock()
 			SentTransactions++
@@ -344,6 +356,7 @@ func doWarmUpTx(
 func sendWarmupTransaction(
 	ctx context.Context,
 	rpcClient *rpc.Client,
+
 	raydiumClient *raydium.Raydium,
 	user solana.PublicKey,
 	poolKeys *layouts.ApiPoolInfoV4,

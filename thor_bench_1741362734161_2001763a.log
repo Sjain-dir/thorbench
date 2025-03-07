@@ -1,0 +1,17 @@
+Log file created at: /Users/rxw777/Workspace/Audace/bid-benchmark/thorbench/thor_bench_1741362734161_2001763a.log
+[32mDate                   :[0m Fri, 07 Mar 2025 15:52:14 UTC
+[32mTest Wallet            :[0m FHHXaarTCD3KcbhoDLEfrGTbTftAbsjT6LxtxMGCGMrd
+[32mStarting Test ID       :[0m 2001763a
+[32mRPC URL                :[0m http://79.137.101.98:8899
+[32mWS URL                 :[0m ws://79.137.101.98:8900
+[32mRPC Send URL           :[0m http://162.19.222.232/iris?api-key=test6ydWhktFgtmGi0PKqGCU383SFyzet3EIuXRtHbahOjoQsCL9tpKNmPghugJg
+[32mRate Limit             :[0m 5
+[32mTransaction Count      :[0m 1
+[32mSlippage               :[0m 100.0
+[32mToken Swap Amount      :[0m 0.0100
+[32mCompute Unit Limit     :[0m 30000
+[32mPriority Fee/CU        :[0m 1.000000 Lamports (0.000035000 SOL)
+[32mNode Retries           :[0m 0
+
+Initializing...
+FATA error getting test wallet balance: rpc call getBalance() on http://79.137.101.98:8899: Post "http://79.137.101.98:8899": dial tcp 79.137.101.98:8899: connect: operation timed out

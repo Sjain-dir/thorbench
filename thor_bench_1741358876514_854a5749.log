@@ -1,0 +1,31 @@
+Log file created at: /Users/rxw777/Workspace/Audace/bid-benchmark/thorbench/thor_bench_1741358876514_854a5749.log
+[32mDate                   :[0m Fri, 07 Mar 2025 14:47:56 UTC
+[32mTest Wallet            :[0m FHHXaarTCD3KcbhoDLEfrGTbTftAbsjT6LxtxMGCGMrd
+[32mStarting Test ID       :[0m 854a5749
+[32mRPC URL                :[0m https://mainnet.helius-rpc.com/?api-key=f7a83dd5-197e-46f9-87e0-e59497b17b22
+[32mWS URL                 :[0m wss://mainnet.helius-rpc.com/?api-key=f7a83dd5-197e-46f9-87e0-e59497b17b22
+[32mRPC Send URL           :[0m http://162.19.222.232/iris?api-key=test6ydWhktFgtmGi0PKqGCU383SFyzet3EIuXRtHbahOjoQsCL9tpKNmPghugJg
+[32mRate Limit             :[0m 200
+[32mTransaction Count      :[0m 20
+[32mSlippage               :[0m 100.0
+[32mToken Swap Amount      :[0m 0.0100
+[32mCompute Unit Limit     :[0m 30000
+[32mPriority Fee/CU        :[0m 1.000000 Lamports (0.000035000 SOL)
+[32mNode Retries           :[0m 0
+
+Initializing...
+Connected to the websocket. Listening for transactions...
+CTRL+C detected, Force stopping the test
+Stopping listening for log events...
+[32mFinished Test ID       :[0m 854a5749
+[32mTest Wallet            :[0m FHHXaarTCD3KcbhoDLEfrGTbTftAbsjT6LxtxMGCGMrd
+[32mRPC URL                :[0m https://mainnet.helius-rpc.com/?api-key=f7a83dd5-197e-46f9-87e0-e59497b17b22
+[32mWS URL                 :[0m wss://mainnet.helius-rpc.com/?api-key=f7a83dd5-197e-46f9-87e0-e59497b17b22
+[32mRPC Send URL           :[0m http://162.19.222.232/iris?api-key=test6ydWhktFgtmGi0PKqGCU383SFyzet3EIuXRtHbahOjoQsCL9tpKNmPghugJg
+[32mRate Limit             :[0m 200
+[32mTransaction Count      :[0m 20
+[32mSlippage               :[0m 100.0
+[32mToken Swap Amount      :[0m 0.0100
+[32mCompute Unit Limit     :[0m 30000
+[32mPriority Fee/CU        :[0m 1.000000 Lamports (0.000035000 SOL)
+[32mNode Retries           :[0m 0
